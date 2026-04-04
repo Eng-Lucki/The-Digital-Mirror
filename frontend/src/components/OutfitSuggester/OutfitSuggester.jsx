@@ -5,15 +5,19 @@ export function OutfitSuggester({ items }) {
   const [swatches, setSwatches] = useState([])
   const [suggestions, setSuggestions] = useState([])
   const [loading, setLoading] = useState(false)
+  const [error, setError] = useState(null)
 
   async function handleSuggest() {
     const colors = items.flatMap(i => i.colors)
     if (!colors.length) return
     setLoading(true)
+    setError(null)
     try {
       const result = await getSuggestions(colors)
       setSwatches(result.swatches)
       setSuggestions(result.suggestions)
+    } catch {
+      setError('Could not fetch suggestions. Please try again.')
     } finally {
       setLoading(false)
     }
@@ -34,12 +38,16 @@ export function OutfitSuggester({ items }) {
         {loading ? 'Analysing…' : 'Suggest Outfit'}
       </button>
 
+      {error && (
+        <p className="text-xs text-red-500">{error}</p>
+      )}
+
       {swatches.length > 0 && (
         <div>
           <p className="text-xs text-gray-500 mb-2">Complementary palette</p>
           <div className="flex gap-2 flex-wrap">
             {swatches.map((hex, i) => (
-              <div key={i} className="flex flex-col items-center gap-1">
+              <div key={hex} className="flex flex-col items-center gap-1">
                 <div
                   className="w-8 h-8 rounded-full border border-gray-200 shadow-sm"
                   style={{ backgroundColor: hex }}
@@ -56,7 +64,7 @@ export function OutfitSuggester({ items }) {
         <div className="flex flex-col gap-2">
           <p className="text-xs text-gray-500">Suggestions</p>
           {suggestions.map((s, i) => (
-            <p key={i} className="text-sm text-gray-700 bg-gray-50 rounded-lg p-3 leading-snug">
+            <p key={i + s.slice(0, 20)} className="text-sm text-gray-700 bg-gray-50 rounded-lg p-3 leading-snug">
               {s}
             </p>
           ))}
