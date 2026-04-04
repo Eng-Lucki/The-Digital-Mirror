@@ -27,6 +27,40 @@ function extractColors(imageUrl) {
   })
 }
 
+function Section({ label, inputRef, type, clothingItems, activeItem, onUpload, onSelectItem, onRemoveItem }) {
+  return (
+    <div>
+      <div className="flex items-center justify-between mb-2">
+        <span className="text-xs text-gray-500 uppercase tracking-wide">{label}</span>
+        <button
+          onClick={() => inputRef.current?.click()}
+          className="text-xs font-semibold text-gray-900 hover:underline"
+        >
+          + Add
+        </button>
+      </div>
+      <input
+        ref={inputRef}
+        type="file"
+        accept="image/*"
+        className="hidden"
+        onChange={e => onUpload(e.target.files?.[0], type)}
+      />
+      <div className="grid grid-cols-2 gap-2">
+        {clothingItems.map(item => (
+          <ClothingItem
+            key={item.id}
+            item={item}
+            isActive={activeItem?.id === item.id}
+            onSelect={onSelectItem}
+            onRemove={onRemoveItem}
+          />
+        ))}
+      </div>
+    </div>
+  )
+}
+
 export function Closet({ items, activeShirt, activePants, onAddItem, onRemoveItem, onSelectItem }) {
   const shirtRef = useRef(null)
   const pantsRef = useRef(null)
@@ -41,47 +75,13 @@ export function Closet({ items, activeShirt, activePants, onAddItem, onRemoveIte
   const shirts = items.filter(i => i.type === 'shirt')
   const pants = items.filter(i => i.type === 'pants')
 
-  function Section({ label, inputRef, type, clothingItems, activeItem }) {
-    return (
-      <div>
-        <div className="flex items-center justify-between mb-2">
-          <span className="text-xs text-gray-500 uppercase tracking-wide">{label}</span>
-          <button
-            onClick={() => inputRef.current?.click()}
-            className="text-xs font-semibold text-gray-900 hover:underline"
-          >
-            + Add
-          </button>
-        </div>
-        <input
-          ref={inputRef}
-          type="file"
-          accept="image/*"
-          className="hidden"
-          onChange={e => handleUpload(e.target.files?.[0], type)}
-        />
-        <div className="grid grid-cols-2 gap-2">
-          {clothingItems.map(item => (
-            <ClothingItem
-              key={item.id}
-              item={item}
-              isActive={activeItem?.id === item.id}
-              onSelect={onSelectItem}
-              onRemove={onRemoveItem}
-            />
-          ))}
-        </div>
-      </div>
-    )
-  }
-
   return (
     <div className="flex flex-col gap-5 p-4 overflow-y-auto h-full bg-white border-r border-gray-200">
       <h2 className="text-xs font-semibold text-gray-700 uppercase tracking-widest">
         Digital Closet
       </h2>
-      <Section label="Shirts" inputRef={shirtRef} type="shirt" clothingItems={shirts} activeItem={activeShirt} />
-      <Section label="Pants" inputRef={pantsRef} type="pants" clothingItems={pants} activeItem={activePants} />
+      <Section label="Shirts" inputRef={shirtRef} type="shirt" clothingItems={shirts} activeItem={activeShirt} onUpload={handleUpload} onSelectItem={onSelectItem} onRemoveItem={onRemoveItem} />
+      <Section label="Pants" inputRef={pantsRef} type="pants" clothingItems={pants} activeItem={activePants} onUpload={handleUpload} onSelectItem={onSelectItem} onRemoveItem={onRemoveItem} />
     </div>
   )
 }
