@@ -18,6 +18,12 @@ export default function App() {
     if (item.type === 'pants') setActivePants(item)
   }
 
+  function handleRemoveItem(id) {
+    if (activeShirt?.id === id) setActiveShirt(null)
+    if (activePants?.id === id) setActivePants(null)
+    removeItem(id)
+  }
+
   return (
     <div className="flex flex-col h-screen bg-gray-100 overflow-hidden">
       {/* Header */}
@@ -34,7 +40,7 @@ export default function App() {
             activeShirt={activeShirt}
             activePants={activePants}
             onAddItem={addItem}
-            onRemoveItem={removeItem}
+            onRemoveItem={handleRemoveItem}
             onSelectItem={handleSelectItem}
           />
         </div>
