@@ -64,7 +64,7 @@ export function OutfitSuggester({ items }) {
         <div className="flex flex-col gap-2">
           <p className="text-xs text-gray-500">Suggestions</p>
           {suggestions.map((s, i) => (
-            <p key={i + s.slice(0, 20)} className="text-sm text-gray-700 bg-gray-50 rounded-lg p-3 leading-snug">
+            <p key={`${i}::${s.slice(0, 20)}`} className="text-sm text-gray-700 bg-gray-50 rounded-lg p-3 leading-snug">
               {s}
             </p>
           ))}
