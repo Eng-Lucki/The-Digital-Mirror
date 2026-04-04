@@ -59,6 +59,8 @@ export function applyTexture(mannequin, clothingType, imageUrl) {
     texture.colorSpace = THREE.SRGBColorSpace
     mannequin.traverse((child) => {
       if (child.isMesh && targets.includes(child.name)) {
+        child.material.map?.dispose()
+        child.material.dispose()
         child.material = new THREE.MeshStandardMaterial({
           map: texture,
           transparent: true,
