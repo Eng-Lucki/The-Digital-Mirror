@@ -1,7 +1,7 @@
-fastapi
-uvicorn[standard]
-rembg
-pillow
-python-multipart
-pytest
-httpx
+fastapi==0.135.3
+uvicorn==0.43.0
+rembg==2.0.74
+pillow==12.2.0
+python-multipart==0.0.22
+pytest==9.0.2
+httpx==0.28.1
