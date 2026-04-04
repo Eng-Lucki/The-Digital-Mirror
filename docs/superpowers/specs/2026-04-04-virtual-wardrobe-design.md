@@ -85,7 +85,7 @@ cloths/
 - **Storage:** Fully in-memory pipeline — no disk writes (free-tier Render compatible)
 
 ### `POST /suggest`
-- **Input:** `{ "colors": ["#3A5FA0", "#F2E8D0"] }` — hex codes extracted client-side from dominant pixels
+- **Input:** `{ "colors": ["#3A5FA0", "#F2E8D0"] }` — hex codes extracted client-side via `color-thief` JS library on the processed PNG canvas (top 2 dominant colors per item)
 - **Processing:**
   1. Convert hex → HSL
   2. Compute color harmonies: complementary (hue +180°), analogous (±30°), triadic (±120°)
@@ -106,31 +106,32 @@ python-multipart
 
 ## UI/UX Dashboard
 
-**Two-panel layout:**
+**Three-panel layout:**
 
 ```
-┌─────────────────────────────────────────────────────────┐
-│  Virtual Wardrobe                       [Male] [Female]  │
-├──────────────────────┬──────────────────────────────────┤
-│  DIGITAL CLOSET      │                                  │
-│  [+ Add Shirt]       │        3D MANNEQUIN              │
-│  [+ Add Pants]       │         (Three.js canvas)        │
-│                      │      [rotate / zoom]             │
-│  Shirts: thumbnails  ├──────────────────────────────────┤
-│  Pants: thumbnails   │  Height slider    Width slider   │
-│                      ├──────────────────────────────────┤
-│                      │  OUTFIT SUGGESTER                │
-│                      │  ● ● ● ●  Complementary palette  │
-│                      │  "Try pairing with navy trousers"│
-└──────────────────────┴──────────────────────────────────┘
+┌──────────────────────────────────────────────────────────────────┐
+│  Virtual Wardrobe                              [Male] [Female]    │
+├─────────────────┬──────────────────────┬─────────────────────────┤
+│  DIGITAL CLOSET │                      │  OUTFIT SUGGESTER       │
+│  [+ Add Shirt]  │    3D MANNEQUIN      │  ● ● ● ●  Palette       │
+│  [+ Add Pants]  │   (Three.js canvas)  │  "Try pairing with..."  │
+│                 │   [rotate / zoom]    │                         │
+│  Shirts:        │                      │                         │
+│  thumbnails     ├──────────────────────┤                         │
+│                 │  Height ──●──  Width │                         │
+│  Pants:         │                      │                         │
+│  thumbnails     │                      │                         │
+└─────────────────┴──────────────────────┴─────────────────────────┘
 ```
 
 **Design language:**
 - Tailwind CSS — white/light-gray background, dark text
+- Three-column layout: Closet (left) | Mannequin (center) | Suggester (right)
+- Mannequin canvas is the focal centerpiece of the dashboard
 - Clothing thumbnails show processed transparent PNG
 - Clicking a closet item applies it to the mannequin immediately
 - Active item highlighted with colored border
-- Outfit Suggester panel always visible below controls
+- Outfit Suggester panel always visible on the right
 
 ---
 

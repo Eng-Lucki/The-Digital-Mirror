@@ -8,9 +8,8 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=[
         "http://localhost:5173",
-        "https://cloths.vercel.app",
     ],
-    allow_origin_regex=r"https://.*\.vercel\.app",
+    allow_origin_regex=r"https://the-digital-mirror(-[a-z0-9]+)*\.vercel\.app",
     allow_methods=["*"],
     allow_headers=["*"],
 )
