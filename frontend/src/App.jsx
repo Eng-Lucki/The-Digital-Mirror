@@ -10,35 +10,61 @@ import { OutfitSuggester } from './components/OutfitSuggester/OutfitSuggester'
 export default function App() {
   const { gender, toggleGender, scaleX, setScaleX, scaleY, setScaleY } = useMannequin()
   const { items, addItem, removeItem } = useWardrobe()
-  const [activeShirt, setActiveShirt] = useState(null)
-  const [activePants, setActivePants] = useState(null)
+
+  const [activeShirt,      setActiveShirt]      = useState(null)
+  const [activePants,      setActivePants]      = useState(null)
+  const [activeHat,        setActiveHat]        = useState(null)
+  const [activeSunglasses, setActiveSunglasses] = useState(null)
+  const [activeScarf,      setActiveScarf]      = useState(null)
+  const [activeShoes,      setActiveShoes]      = useState(null)
+
+  const setters = {
+    shirt:      setActiveShirt,
+    pants:      setActivePants,
+    hat:        setActiveHat,
+    sunglasses: setActiveSunglasses,
+    scarf:      setActiveScarf,
+    shoes:      setActiveShoes,
+  }
 
   function handleSelectItem(item) {
-    if (item.type === 'shirt') setActiveShirt(item)
-    if (item.type === 'pants') setActivePants(item)
+    setters[item.type]?.(item)
   }
 
   function handleRemoveItem(id) {
-    if (activeShirt?.id === id) setActiveShirt(null)
-    if (activePants?.id === id) setActivePants(null)
+    const item = items.find(i => i.id === id)
+    if (item) setters[item.type]?.(prev => prev?.id === id ? null : prev)
     removeItem(id)
   }
 
+  const activeMap = {
+    shirt:      activeShirt,
+    pants:      activePants,
+    hat:        activeHat,
+    sunglasses: activeSunglasses,
+    scarf:      activeScarf,
+    shoes:      activeShoes,
+  }
+
   return (
-    <div className="flex flex-col h-screen bg-gray-100 overflow-hidden">
+    <div
+      className="flex flex-col h-screen overflow-hidden"
+      style={{ background: 'linear-gradient(135deg, #0f0a1e 0%, #1a0f35 50%, #0d1b3e 100%)' }}
+    >
       {/* Header */}
-      <header className="flex items-center px-6 py-3 bg-white border-b border-gray-200 shadow-sm flex-shrink-0">
-        <h1 className="text-base font-bold text-gray-900 tracking-tight">Virtual Wardrobe</h1>
+      <header className="glass flex items-center px-6 h-14 flex-shrink-0 border-b border-white/10 z-10">
+        <h1 className="text-lg font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-400">
+          The Digital Mirror
+        </h1>
       </header>
 
       {/* Three-column body */}
-      <div className="flex flex-1 min-h-0">
+      <div className="flex flex-1 min-h-0 p-3 gap-3">
         {/* Left — Digital Closet */}
-        <div className="w-52 flex-shrink-0 overflow-hidden">
+        <div className="w-60 flex-shrink-0 glass rounded-xl overflow-hidden">
           <Closet
             items={items}
-            activeShirt={activeShirt}
-            activePants={activePants}
+            activeMap={activeMap}
             onAddItem={addItem}
             onRemoveItem={handleRemoveItem}
             onSelectItem={handleSelectItem}
@@ -46,14 +72,23 @@ export default function App() {
         </div>
 
         {/* Center — Mannequin */}
-        <div className="flex flex-col flex-1 min-w-0 border-x border-gray-200">
-          <div className="flex-1 relative bg-gray-50">
+        <div className="flex flex-col flex-1 min-w-0 glass rounded-xl overflow-hidden">
+          <div className="flex-1 relative" style={{ background: 'rgba(0,0,0,0.35)' }}>
             <Viewer3D
               gender={gender}
               scaleX={scaleX}
               scaleY={scaleY}
               shirtUrl={activeShirt?.url ?? null}
               pantsUrl={activePants?.url ?? null}
+              hatUrl={activeHat?.url ?? null}
+              sunglassesUrl={activeSunglasses?.url ?? null}
+              scarfUrl={activeScarf?.url ?? null}
+              shoesUrl={activeShoes?.url ?? null}
+            />
+            {/* Purple floor glow */}
+            <div
+              className="absolute bottom-0 left-0 right-0 h-28 pointer-events-none"
+              style={{ background: 'radial-gradient(ellipse at 50% 100%, rgba(168,85,247,0.18), transparent 70%)' }}
             />
           </div>
           <Controls
@@ -67,7 +102,7 @@ export default function App() {
         </div>
 
         {/* Right — Outfit Suggester */}
-        <div className="w-52 flex-shrink-0 overflow-hidden">
+        <div className="w-60 flex-shrink-0 glass rounded-xl overflow-hidden">
           <OutfitSuggester items={items} />
         </div>
       </div>
