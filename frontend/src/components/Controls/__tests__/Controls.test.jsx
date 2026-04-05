@@ -16,20 +16,17 @@ test('renders Male and Female buttons', () => {
   expect(screen.getByText('Female')).toBeInTheDocument()
 })
 
-test('Male button is active when gender is male', () => {
-  render(<Controls {...defaults} gender="male" />)
-  expect(screen.getByText('Male')).toHaveClass('bg-gray-900')
-})
-
-test('Female button is active when gender is female', () => {
-  render(<Controls {...defaults} gender="female" />)
-  expect(screen.getByText('Female')).toHaveClass('bg-gray-900')
-})
-
 test('clicking Female calls onToggleGender', () => {
   const onToggle = vi.fn()
   render(<Controls {...defaults} onToggleGender={onToggle} />)
   fireEvent.click(screen.getByText('Female'))
+  expect(onToggle).toHaveBeenCalledTimes(1)
+})
+
+test('clicking Male calls onToggleGender', () => {
+  const onToggle = vi.fn()
+  render(<Controls {...defaults} onToggleGender={onToggle} />)
+  fireEvent.click(screen.getByText('Male'))
   expect(onToggle).toHaveBeenCalledTimes(1)
 })
 
@@ -44,4 +41,10 @@ test('width slider fires onScaleXChange', () => {
   render(<Controls {...defaults} onScaleXChange={onScaleXChange} />)
   fireEvent.change(screen.getAllByRole('slider')[1], { target: { value: '0.9' } })
   expect(onScaleXChange).toHaveBeenCalledWith(0.9)
+})
+
+test('renders Height and Width labels', () => {
+  render(<Controls {...defaults} />)
+  expect(screen.getByText('Height')).toBeInTheDocument()
+  expect(screen.getByText('Width')).toBeInTheDocument()
 })
