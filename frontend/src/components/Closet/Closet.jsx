@@ -1,5 +1,5 @@
 // frontend/src/components/Closet/Closet.jsx
-import { useRef } from 'react'
+import { useRef, useState } from 'react'
 import { ClothingItem } from './ClothingItem'
 import { uploadClothing } from '../../services/api'
 import ColorThief from 'color-thief-browser'
@@ -27,43 +27,77 @@ function extractColors(imageUrl) {
   })
 }
 
+const SECTIONS = [
+  { label: 'Shirts',      type: 'shirt'       },
+  { label: 'Pants',       type: 'pants'       },
+  { label: 'Hats',        type: 'hat'         },
+  { label: 'Sunglasses',  type: 'sunglasses'  },
+  { label: 'Scarves',     type: 'scarf'       },
+  { label: 'Shoes',       type: 'shoes'       },
+]
+
 function Section({ label, inputRef, type, clothingItems, activeItem, onUpload, onSelectItem, onRemoveItem }) {
+  const [open, setOpen] = useState(true)
+
   return (
     <div>
-      <div className="flex items-center justify-between mb-2">
-        <span className="text-xs text-gray-500 uppercase tracking-wide">{label}</span>
-        <button
-          onClick={() => inputRef.current?.click()}
-          className="text-xs font-semibold text-gray-900 hover:underline"
+      <button
+        onClick={() => setOpen(o => !o)}
+        className="flex items-center justify-between w-full mb-2 group"
+      >
+        <span className="text-xs text-purple-300 uppercase tracking-[0.15em]">{label}</span>
+        <span
+          className="text-purple-400 text-xs transition-transform duration-200"
+          style={{ display: 'inline-block', transform: open ? 'rotate(0deg)' : 'rotate(-90deg)' }}
         >
-          + Add
-        </button>
-      </div>
-      <input
-        ref={inputRef}
-        type="file"
-        accept="image/*"
-        className="hidden"
-        onChange={e => onUpload(e.target.files?.[0], type)}
-      />
-      <div className="grid grid-cols-2 gap-2">
-        {clothingItems.map(item => (
-          <ClothingItem
-            key={item.id}
-            item={item}
-            isActive={activeItem?.id === item.id}
-            onSelect={onSelectItem}
-            onRemove={onRemoveItem}
+          ▼
+        </span>
+      </button>
+
+      {open && (
+        <>
+          <input
+            ref={inputRef}
+            type="file"
+            accept="image/*"
+            className="hidden"
+            onChange={e => onUpload(e.target.files?.[0], type)}
           />
-        ))}
-      </div>
+          <div className="grid grid-cols-2 gap-2 mb-4">
+            {clothingItems.map(item => (
+              <ClothingItem
+                key={item.id}
+                item={item}
+                isActive={activeItem?.id === item.id}
+                onSelect={onSelectItem}
+                onRemove={onRemoveItem}
+              />
+            ))}
+            <button
+              onClick={() => inputRef.current?.click()}
+              className="aspect-square rounded-lg border border-dashed border-white/20 flex flex-col
+                         items-center justify-center gap-1 hover:border-purple-400 hover:bg-purple-500/10
+                         transition-colors cursor-pointer"
+            >
+              <span className="text-white/40 text-xl leading-none">+</span>
+              <span className="text-xs text-white/30">Upload</span>
+            </button>
+          </div>
+        </>
+      )}
     </div>
   )
 }
 
-export function Closet({ items, activeShirt, activePants, onAddItem, onRemoveItem, onSelectItem }) {
-  const shirtRef = useRef(null)
-  const pantsRef = useRef(null)
+export function Closet({ items, activeMap, onAddItem, onRemoveItem, onSelectItem }) {
+  const refs = {
+    shirt:      useRef(null),
+    pants:      useRef(null),
+    hat:        useRef(null),
+    sunglasses: useRef(null),
+    scarf:      useRef(null),
+    shoes:      useRef(null),
+  }
 
   async function handleUpload(file, type) {
     if (!file) return
@@ -72,16 +106,25 @@ export function Closet({ items, activeShirt, activePants, onAddItem, onRemoveIte
     onAddItem({ id: Date.now().toString(), type, url, name: file.name, colors })
   }
 
-  const shirts = items.filter(i => i.type === 'shirt')
-  const pants = items.filter(i => i.type === 'pants')
-
   return (
-    <div className="flex flex-col gap-5 p-4 overflow-y-auto h-full bg-white border-r border-gray-200">
-      <h2 className="text-xs font-semibold text-gray-700 uppercase tracking-widest">
+    <div className="flex flex-col gap-1 p-4 overflow-y-auto h-full">
+      <h2 className="text-xs font-semibold text-purple-300 uppercase tracking-[0.2em] mb-3">
         Digital Closet
       </h2>
-      <Section label="Shirts" inputRef={shirtRef} type="shirt" clothingItems={shirts} activeItem={activeShirt} onUpload={handleUpload} onSelectItem={onSelectItem} onRemoveItem={onRemoveItem} />
-      <Section label="Pants" inputRef={pantsRef} type="pants" clothingItems={pants} activeItem={activePants} onUpload={handleUpload} onSelectItem={onSelectItem} onRemoveItem={onRemoveItem} />
+
+      {SECTIONS.map(({ label, type }) => (
+        <Section
+          key={type}
+          label={label}
+          inputRef={refs[type]}
+          type={type}
+          clothingItems={items.filter(i => i.type === type)}
+          activeItem={activeMap?.[type] ?? null}
+          onUpload={handleUpload}
+          onSelectItem={onSelectItem}
+          onRemoveItem={onRemoveItem}
+        />
+      ))}
     </div>
   )
 }
