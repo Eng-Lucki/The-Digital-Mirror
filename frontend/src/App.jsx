@@ -28,8 +28,8 @@ export default function App() {
   }
 
   function handleAddItem(item) {
-    setters[item.type]?.(null)
     addItem(item)
+    setters[item.type]?.(item)
   }
 
   function handleSelectItem(item) {

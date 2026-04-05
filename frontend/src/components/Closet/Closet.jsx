@@ -105,11 +105,24 @@ export function Closet({ items, activeMap, onAddItem, onRemoveItem, onSelectItem
     shoes:      shoesRef,
   }
 
+  const [uploading, setUploading] = useState(false)
+  const [uploadError, setUploadError] = useState(null)
+
   async function handleUpload(file, type) {
     if (!file) return
-    const url = await uploadClothing(file, type)
+    setUploading(true)
+    setUploadError(null)
+    let url
+    try {
+      url = await uploadClothing(file, type)
+    } catch {
+      setUploadError('Upload failed — is the server running?')
+      setUploading(false)
+      return
+    }
     const colors = await extractColors(url)
     onAddItem({ id: Date.now().toString(), type, url, name: file.name, colors })
+    setUploading(false)
   }
 
   return (
@@ -117,6 +130,12 @@ export function Closet({ items, activeMap, onAddItem, onRemoveItem, onSelectItem
       <h2 className="text-xs font-semibold text-purple-300 uppercase tracking-[0.2em] mb-3">
         Digital Closet
       </h2>
+      {uploading && (
+        <p className="text-xs text-purple-300 mb-2 animate-pulse">Uploading…</p>
+      )}
+      {uploadError && (
+        <p className="text-xs text-red-400 mb-2">{uploadError}</p>
+      )}
 
       {SECTIONS.map(({ label, type }) => (
         <Section
