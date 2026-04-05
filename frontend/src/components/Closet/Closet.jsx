@@ -90,13 +90,19 @@ function Section({ label, inputRef, type, clothingItems, activeItem, onUpload, o
 }
 
 export function Closet({ items, activeMap, onAddItem, onRemoveItem, onSelectItem }) {
+  const shirtRef      = useRef(null)
+  const pantsRef      = useRef(null)
+  const hatRef        = useRef(null)
+  const sunglassesRef = useRef(null)
+  const scarfRef      = useRef(null)
+  const shoesRef      = useRef(null)
   const refs = {
-    shirt:      useRef(null),
-    pants:      useRef(null),
-    hat:        useRef(null),
-    sunglasses: useRef(null),
-    scarf:      useRef(null),
-    shoes:      useRef(null),
+    shirt:      shirtRef,
+    pants:      pantsRef,
+    hat:        hatRef,
+    sunglasses: sunglassesRef,
+    scarf:      scarfRef,
+    shoes:      shoesRef,
   }
 
   async function handleUpload(file, type) {

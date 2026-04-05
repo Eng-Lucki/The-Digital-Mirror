@@ -27,6 +27,11 @@ export default function App() {
     shoes:      setActiveShoes,
   }
 
+  function handleAddItem(item) {
+    setters[item.type]?.(null)
+    addItem(item)
+  }
+
   function handleSelectItem(item) {
     setters[item.type]?.(item)
   }
@@ -65,7 +70,7 @@ export default function App() {
           <Closet
             items={items}
             activeMap={activeMap}
-            onAddItem={addItem}
+            onAddItem={handleAddItem}
             onRemoveItem={handleRemoveItem}
             onSelectItem={handleSelectItem}
           />

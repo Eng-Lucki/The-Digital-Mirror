@@ -23,9 +23,16 @@ test('clicking Female calls onToggleGender', () => {
   expect(onToggle).toHaveBeenCalledTimes(1)
 })
 
-test('clicking Male calls onToggleGender', () => {
+test('clicking already-active Male does not call onToggleGender', () => {
   const onToggle = vi.fn()
-  render(<Controls {...defaults} onToggleGender={onToggle} />)
+  render(<Controls {...defaults} gender="male" onToggleGender={onToggle} />)
+  fireEvent.click(screen.getByText('Male'))
+  expect(onToggle).not.toHaveBeenCalled()
+})
+
+test('clicking inactive Male calls onToggleGender', () => {
+  const onToggle = vi.fn()
+  render(<Controls {...defaults} gender="female" onToggleGender={onToggle} />)
   fireEvent.click(screen.getByText('Male'))
   expect(onToggle).toHaveBeenCalledTimes(1)
 })

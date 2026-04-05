@@ -13,7 +13,7 @@ export function Controls({ gender, onToggleGender, scaleY, onScaleYChange, scale
         {['male', 'female'].map(g => (
           <button
             key={g}
-            onClick={onToggleGender}
+            onClick={gender !== g ? onToggleGender : undefined}
             className="relative z-10 px-4 py-1 text-sm font-medium text-white/80 capitalize rounded-full"
           >
             {g.charAt(0).toUpperCase() + g.slice(1)}
