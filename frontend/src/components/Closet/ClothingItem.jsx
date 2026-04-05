@@ -3,22 +3,21 @@ export function ClothingItem({ item, isActive, onSelect, onRemove }) {
   return (
     <div
       onClick={() => onSelect(item)}
-      className={`relative cursor-pointer rounded-lg border-2 p-1 transition-colors ${
-        isActive ? 'border-gray-900' : 'border-gray-200 hover:border-gray-400'
+      className={`relative aspect-square rounded-lg overflow-hidden cursor-pointer transition-all ${
+        isActive
+          ? 'ring-2 ring-purple-500 shadow-[0_0_14px_rgba(168,85,247,0.55)]'
+          : 'border border-white/10 hover:border-purple-400/50'
       }`}
+      style={{ background: 'rgba(255,255,255,0.05)' }}
     >
-      <img
-        src={item.url}
-        alt={item.name}
-        className="w-full h-20 object-contain bg-gray-50 rounded"
-      />
+      <img src={item.url} alt={item.name} className="w-full h-full object-contain p-1" />
       <button
         onClick={e => { e.stopPropagation(); onRemove(item.id) }}
-        className="absolute top-1 right-1 w-5 h-5 bg-red-400 text-white rounded-full text-xs font-bold flex items-center justify-center hover:bg-red-600"
+        className="absolute top-0.5 right-0.5 w-5 h-5 rounded-full bg-black/50 text-white/70
+                   text-xs flex items-center justify-center hover:bg-red-500/80 transition-colors"
       >
         ×
       </button>
-      <p className="text-xs text-gray-500 truncate mt-1 px-0.5">{item.name}</p>
     </div>
   )
 }
