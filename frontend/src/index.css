@@ -2,11 +2,23 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Tailwind v4 theme tokens — font and shimmer animation */
+@theme {
+  --font-sans: 'Inter', sans-serif;
+  --animate-shimmer: shimmer 2s linear infinite;
+}
+
+@keyframes shimmer {
+  0%   { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
 @layer base {
   * {
     font-family: 'Inter', sans-serif;
   }
 
+  /* WebKit scrollbar */
   ::-webkit-scrollbar {
     width: 4px;
   }
@@ -16,6 +28,12 @@
   ::-webkit-scrollbar-thumb {
     background: #a855f7;
     border-radius: 2px;
+  }
+
+  /* Firefox scrollbar */
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: #a855f7 transparent;
   }
 }
 
