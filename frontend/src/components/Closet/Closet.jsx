@@ -28,15 +28,15 @@ function extractColors(imageUrl) {
 }
 
 const SECTIONS = [
-  { label: 'Shirts',      type: 'shirt'       },
-  { label: 'Pants',       type: 'pants'       },
-  { label: 'Hats',        type: 'hat'         },
-  { label: 'Sunglasses',  type: 'sunglasses'  },
-  { label: 'Scarves',     type: 'scarf'       },
-  { label: 'Shoes',       type: 'shoes'       },
+  { label: 'Shirts',      type: 'shirt',      singular: 'Shirt'      },
+  { label: 'Pants',       type: 'pants',      singular: 'Pants'      },
+  { label: 'Hats',        type: 'hat',        singular: 'Hat'        },
+  { label: 'Sunglasses',  type: 'sunglasses', singular: 'Sunglasses' },
+  { label: 'Scarves',     type: 'scarf',      singular: 'Scarf'      },
+  { label: 'Shoes',       type: 'shoes',      singular: 'Shoes'      },
 ]
 
-function Section({ label, inputRef, type, clothingItems, activeItem, onUpload, onSelectItem, onRemoveItem }) {
+function Section({ label, singular, inputRef, type, clothingItems, activeItem, onUpload, onSelectItem, onRemoveItem }) {
   const [open, setOpen] = useState(true)
 
   return (
@@ -84,7 +84,7 @@ function Section({ label, inputRef, type, clothingItems, activeItem, onUpload, o
                        transition-all text-xs"
           >
             <span className="text-base leading-none">+</span>
-            <span>Add {label.slice(0, -1)}</span>
+            <span>Add {singular}</span>
           </button>
         </div>
       )}
@@ -144,10 +144,11 @@ export function Closet({ items, activeMap, onAddItem, onRemoveItem, onSelectItem
         <p className="text-xs text-red-400 mb-2 px-2">{uploadError}</p>
       )}
 
-      {SECTIONS.map(({ label, type }) => (
+      {SECTIONS.map(({ label, type, singular }) => (
         <Section
           key={type}
           label={label}
+          singular={singular}
           inputRef={refs[type]}
           type={type}
           clothingItems={items.filter(i => i.type === type)}
