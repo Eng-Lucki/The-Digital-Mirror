@@ -64,7 +64,7 @@ test('Closet renders all 6 section labels', () => {
   expect(screen.getByText('Shoes')).toBeInTheDocument()
 })
 
-test('Closet renders Digital Closet heading', () => {
+test('Closet renders Closet heading', () => {
   render(
     <Closet
       items={[]}
@@ -74,5 +74,5 @@ test('Closet renders Digital Closet heading', () => {
       onSelectItem={vi.fn()}
     />
   )
-  expect(screen.getByText('Digital Closet')).toBeInTheDocument()
+  expect(screen.getByText('Closet')).toBeInTheDocument()
 })

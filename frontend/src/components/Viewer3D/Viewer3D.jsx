@@ -1,7 +1,9 @@
 // frontend/src/components/Viewer3D/Viewer3D.jsx
 import { useEffect, useRef, useState } from 'react'
 import { createScene } from './scene'
-import { createMannequin, applyTexture, setScale } from './mannequin'
+import { createMannequin, applyClothing, removeClothing, setScale } from './mannequin'
+
+const CLOTHING_TYPES = ['shirt', 'pants', 'hat', 'sunglasses', 'scarf', 'shoes']
 
 export function Viewer3D({
   gender, scaleX, scaleY,
@@ -11,6 +13,8 @@ export function Viewer3D({
   const sceneRef     = useRef(null)
   const mannequinRef = useRef(null)
   const [hintVisible, setHintVisible] = useState(true)
+
+  const urlMap = { shirt: shirtUrl, pants: pantsUrl, hat: hatUrl, sunglasses: sunglassesUrl, scarf: scarfUrl, shoes: shoesUrl }
 
   // Mount scene once
   useEffect(() => {
@@ -32,7 +36,7 @@ export function Viewer3D({
     }
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
-  // Swap mannequin when gender changes — re-apply all active textures
+  // Swap mannequin on gender change — re-apply all active clothing
   useEffect(() => {
     if (!sceneRef.current) return
     const { scene } = sceneRef.current
@@ -42,12 +46,10 @@ export function Viewer3D({
     mannequinRef.current = next
     scene.add(next)
 
-    if (shirtUrl)      applyTexture(next, 'shirt',      shirtUrl)
-    if (pantsUrl)      applyTexture(next, 'pants',      pantsUrl)
-    if (hatUrl)        applyTexture(next, 'hat',        hatUrl)
-    if (sunglassesUrl) applyTexture(next, 'sunglasses', sunglassesUrl)
-    if (scarfUrl)      applyTexture(next, 'scarf',      scarfUrl)
-    if (shoesUrl)      applyTexture(next, 'shoes',      shoesUrl)
+    CLOTHING_TYPES.forEach(type => {
+      const url = urlMap[type]
+      if (url) applyClothing(next, type, url)
+    })
   }, [gender]) // eslint-disable-line react-hooks/exhaustive-deps
 
   // Scale
@@ -55,29 +57,35 @@ export function Viewer3D({
     if (mannequinRef.current) setScale(mannequinRef.current, scaleX, scaleY)
   }, [scaleX, scaleY])
 
-  // Clothing textures
+  // Clothing — apply or remove each type when its URL changes
   useEffect(() => {
-    if (mannequinRef.current && shirtUrl) applyTexture(mannequinRef.current, 'shirt', shirtUrl)
+    if (!mannequinRef.current) return
+    shirtUrl ? applyClothing(mannequinRef.current, 'shirt', shirtUrl) : removeClothing(mannequinRef.current, 'shirt')
   }, [shirtUrl])
 
   useEffect(() => {
-    if (mannequinRef.current && pantsUrl) applyTexture(mannequinRef.current, 'pants', pantsUrl)
+    if (!mannequinRef.current) return
+    pantsUrl ? applyClothing(mannequinRef.current, 'pants', pantsUrl) : removeClothing(mannequinRef.current, 'pants')
   }, [pantsUrl])
 
   useEffect(() => {
-    if (mannequinRef.current && hatUrl) applyTexture(mannequinRef.current, 'hat', hatUrl)
+    if (!mannequinRef.current) return
+    hatUrl ? applyClothing(mannequinRef.current, 'hat', hatUrl) : removeClothing(mannequinRef.current, 'hat')
   }, [hatUrl])
 
   useEffect(() => {
-    if (mannequinRef.current && sunglassesUrl) applyTexture(mannequinRef.current, 'sunglasses', sunglassesUrl)
+    if (!mannequinRef.current) return
+    sunglassesUrl ? applyClothing(mannequinRef.current, 'sunglasses', sunglassesUrl) : removeClothing(mannequinRef.current, 'sunglasses')
   }, [sunglassesUrl])
 
   useEffect(() => {
-    if (mannequinRef.current && scarfUrl) applyTexture(mannequinRef.current, 'scarf', scarfUrl)
+    if (!mannequinRef.current) return
+    scarfUrl ? applyClothing(mannequinRef.current, 'scarf', scarfUrl) : removeClothing(mannequinRef.current, 'scarf')
   }, [scarfUrl])
 
   useEffect(() => {
-    if (mannequinRef.current && shoesUrl) applyTexture(mannequinRef.current, 'shoes', shoesUrl)
+    if (!mannequinRef.current) return
+    shoesUrl ? applyClothing(mannequinRef.current, 'shoes', shoesUrl) : removeClothing(mannequinRef.current, 'shoes')
   }, [shoesUrl])
 
   return (

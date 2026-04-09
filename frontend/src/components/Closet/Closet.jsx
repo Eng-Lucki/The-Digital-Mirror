@@ -40,14 +40,14 @@ function Section({ label, inputRef, type, clothingItems, activeItem, onUpload, o
   const [open, setOpen] = useState(true)
 
   return (
-    <div>
+    <div className="mb-1">
       <button
         onClick={() => setOpen(o => !o)}
-        className="flex items-center justify-between w-full mb-2 group"
+        className="flex items-center justify-between w-full py-1 group"
       >
-        <span className="text-xs text-purple-300 uppercase tracking-[0.15em]">{label}</span>
+        <span className="text-[10px] font-semibold text-purple-400/80 uppercase tracking-[0.18em]">{label}</span>
         <span
-          className="text-purple-400 text-xs transition-transform duration-200"
+          className="text-purple-500/60 text-[9px] transition-transform duration-200"
           style={{ display: 'inline-block', transform: open ? 'rotate(0deg)' : 'rotate(-90deg)' }}
         >
           ▼
@@ -55,7 +55,7 @@ function Section({ label, inputRef, type, clothingItems, activeItem, onUpload, o
       </button>
 
       {open && (
-        <>
+        <div className="mb-3">
           <input
             ref={inputRef}
             type="file"
@@ -63,7 +63,8 @@ function Section({ label, inputRef, type, clothingItems, activeItem, onUpload, o
             className="hidden"
             onChange={e => onUpload(e.target.files?.[0], type)}
           />
-          <div className="grid grid-cols-2 gap-2 mb-4">
+
+          <div className="flex flex-col gap-0.5">
             {clothingItems.map(item => (
               <ClothingItem
                 key={item.id}
@@ -73,17 +74,19 @@ function Section({ label, inputRef, type, clothingItems, activeItem, onUpload, o
                 onRemove={onRemoveItem}
               />
             ))}
-            <button
-              onClick={() => inputRef.current?.click()}
-              className="aspect-square rounded-lg border border-dashed border-white/20 flex flex-col
-                         items-center justify-center gap-1 hover:border-purple-400 hover:bg-purple-500/10
-                         transition-colors cursor-pointer"
-            >
-              <span className="text-white/40 text-xl leading-none">+</span>
-              <span className="text-xs text-white/30">Upload</span>
-            </button>
           </div>
-        </>
+
+          <button
+            onClick={() => inputRef.current?.click()}
+            className="mt-1 w-full flex items-center gap-2 px-2 py-1.5 rounded-lg
+                       border border-dashed border-white/15 text-white/30
+                       hover:border-purple-400/50 hover:text-purple-300 hover:bg-purple-500/8
+                       transition-all text-xs"
+          >
+            <span className="text-base leading-none">+</span>
+            <span>Add {label.slice(0, -1)}</span>
+          </button>
+        </div>
       )}
     </div>
   )
@@ -126,15 +129,19 @@ export function Closet({ items, activeMap, onAddItem, onRemoveItem, onSelectItem
   }
 
   return (
-    <div className="flex flex-col gap-1 p-4 overflow-y-auto h-full">
-      <h2 className="text-xs font-semibold text-purple-300 uppercase tracking-[0.2em] mb-3">
-        Digital Closet
-      </h2>
+    <div className="flex flex-col p-3 overflow-y-auto h-full">
+      <div className="flex items-center justify-between mb-3 pb-2 border-b border-white/8">
+        <h2 className="text-xs font-semibold text-white/60 uppercase tracking-[0.2em]">Closet</h2>
+        <span className="text-[10px] text-purple-400/60">{items.length} item{items.length !== 1 ? 's' : ''}</span>
+      </div>
       {uploading && (
-        <p className="text-xs text-purple-300 mb-2 animate-pulse">Uploading…</p>
+        <div className="flex items-center gap-2 mb-2 px-2 py-1.5 rounded-lg bg-purple-500/10 border border-purple-500/20">
+          <span className="w-1.5 h-1.5 rounded-full bg-purple-400 animate-pulse" />
+          <p className="text-xs text-purple-300">Uploading…</p>
+        </div>
       )}
       {uploadError && (
-        <p className="text-xs text-red-400 mb-2">{uploadError}</p>
+        <p className="text-xs text-red-400 mb-2 px-2">{uploadError}</p>
       )}
 
       {SECTIONS.map(({ label, type }) => (
